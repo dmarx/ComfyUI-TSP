@@ -77,7 +77,7 @@ class TSPPermuteFrames:
         outv = {
             "required": {
                 "images": ("IMAGE",{"forceInput": True,}),
-                "batch_size": ("INT",{"default":12}),
+                "batch_size": ("INT",{"default":12, "max":18}),
             },
         }
         return outv
