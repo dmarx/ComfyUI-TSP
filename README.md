@@ -5,4 +5,4 @@ Animation smoothing via frame permutation using Traveling Salesman optimization
 
 ## VKTRS Variations
 
-![](assets/vktrs-variations.png)
+![](assets/vktrs-variations-slimmer.png)
