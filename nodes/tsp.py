@@ -47,6 +47,19 @@ def tsp_sort(frames):
 #         ordered.extend( tsp_permute_frames(batch) )
 #     return ordered
 
+def batched_tsp_sort(frames, batch_size):
+    """
+    TSP solver is O(n^2). Instead of limiting how many variations a user can
+    request for a particular image, we set an upperbound on how many images we
+    send to the solver at any given time. TODO: Faster solver.
+    """
+    order = []
+    for batch in partition_all(batch_size, frames):
+        prev=len(order)
+        for j in tsp_sort(batch):
+            order.append(prev+j)
+    return order
+
 ####
 
 #from loguru import logger
@@ -64,14 +77,15 @@ class TSPPermuteFrames:
         outv = {
             "required": {
                 "images": ("IMAGE",{"forceInput": True,}),
-                #"batch_size": ("INT",{"default":12}),
+                "batch_size": ("INT",{"default":12}),
             },
         }
         return outv
 
     def main(self, images, batch_size=12):
         #images = batched_tsp_permute_frames(images, batch_size)
-        idx = tsp_sort(images)
+        #idx = tsp_sort(images)
+        idx = batched_tsp_sort(images, batch_size)
         idx = torch.tensor(idx, device=images.device)
         #outv = torch.cat(images, dim=0)
         outv = images[idx]
