@@ -5,6 +5,6 @@ Animation smoothing via frame permutation using Traveling Salesman optimization
 
 ## VKTRS Variations
 
-![](assets/vktrs-variations-slimmer.png)
+![](assets/vktrs-variations-clean.png)
 
 Demo output [here](https://twitter.com/DigThatData/status/1741371329620951076)
