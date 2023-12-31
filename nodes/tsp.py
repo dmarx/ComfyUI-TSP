@@ -83,18 +83,78 @@ class TSPPermuteFrames:
         return outv
 
     def main(self, images, batch_size=12):
-        #images = batched_tsp_permute_frames(images, batch_size)
-        #idx = tsp_sort(images)
         idx = batched_tsp_sort(images, batch_size)
         idx = torch.tensor(idx, device=images.device)
-        #outv = torch.cat(images, dim=0)
         outv = images[idx]
-        #logger.debug(outv.shape)
         return (outv,)
 
 
+class TSPSort:
+    CATEGORY=CATEGORY
+    FUNCTION = 'main'
+    RETURN_TYPES=("ORDERING",)
+    
+    @classmethod
+    def INPUT_TYPES(cls):
+        outv = {
+            "required": {
+                "images": ("IMAGE",{"forceInput": True,}),
+                "batch_size": ("INT",{"default":12, "max":18}),
+            },
+        }
+        return outv
+    
+    def main(self, images, batch_size=12):
+        idx = batched_tsp_sort(images, batch_size)
+        idx = torch.tensor(idx, device=images.device)
+        return (idx,)
+
+
+class TSPApplyOrderingToImages:
+    CATEGORY=CATEGORY
+    FUNCTION = 'main'
+    RETURN_TYPES=("IMAGE",)
+    
+    @classmethod
+    def INPUT_TYPES(cls):
+        outv = {
+            "required": {
+                "images": ("IMAGE",{"forceInput": True,}),
+                "ordering": ("ORDERING",{"forceInput": True}),
+            },
+        }
+        return outv
+
+    def main(self, images, ordering):
+        outv = images[ordering]
+        return (outv,)
+
+
+class TSPApplyOrderingToLatents:
+    CATEGORY=CATEGORY
+    FUNCTION = 'main'
+    RETURN_TYPES=("LATENT",)
+    
+    @classmethod
+    def INPUT_TYPES(cls):
+        outv = {
+            "required": {
+                "latents": ("LATENT",{"forceInput": True,}),
+                "ordering": ("ORDERING",{"forceInput": True}),
+            },
+        }
+        return outv
+
+    def main(self, latents, ordering):
+        outv = latents["samples"][ordering]
+        return ({"samples":outv},)
+
+
 NODE_CLASS_MAPPINGS = {
-    "TSPPermuteFrames": TSPPermuteFrames
+    "TSPPermuteFrames": TSPPermuteFrames,
+    "TSPSort": TSPSort,
+    "TSPApplyOrderingToImages": TSPApplyOrderingToImages,
+    "TSPApplyOrderingToLatents": TSPApplyOrderingToLatents,
 }
 
 # A dictionary that contains the friendly/humanly readable titles for the nodes
